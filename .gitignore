@@ -4,6 +4,7 @@ LwIP
 ptools
 /clion-build/
 /build/
+/.idea/
 
 *.elf
 *.o

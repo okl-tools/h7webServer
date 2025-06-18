@@ -13,25 +13,51 @@ This picture shows C++ app page on mobile controlling 2 LEDs on NUCLEO board
 ![mobile-controls.jpg](mobile-controls.jpg)
 
 
-Bringing modern C++20 to bare metal or RTOS-based embedded systems is challenging.
-ptools' aim is make a bridge between raw C power and modern C++.
-STL is not designed to work on small devices. But there are many good things like
-std::string, std::map, std::vector, ... we don't really want to miss.
-Specially if you come from C++ desktop/frontend/backend developing to embedded world.
+Receipe to build the h7webserver
+- ensure to have a working arm toolchain, not too old. - 14.2 but 12 or 13 could work also <br/>
+inside bash type<br/>
+**arm-none-eabi-g++ --version** <br/>
+*which should show you* <br/>
+  arm-none-eabi-g++ (xPack GNU Arm Embedded GCC x86_64) 14.2.1 20241119
+  Copyright (C) 2024 Free Software Foundation, Inc.
 
-**ptools** is a like STL-light ... or better like STL-light-light
+- cmake 3.22 or more new
 
-- PString //  std::string and a little like QString 
-- P* templates
-  - PMap // std::map
-  - PArray // std::vector .... // I prefer array instead of vector because of 2D/3D vectors i often use...
-  - PStack
-  - PTokenizer
-  
+- git clone https://github.com/STMicroelectronics/STM32CubeH7/tree/master </br>
+I recommend to do this because than you are sure to have all driver code
+and original examples. Unfortunately it is really big - 2.4 GB
 
+- git clone https://github.com/okl-tools/ptools </br> 200 KB only </br>
+ptools is a C++ 20 lib which makes a bridge between C and C++ 20.
 
+- git clone https://github.com/okl-tools/h7webServer </br>
+This code - h7Webserver - fork of [github.com/STM .../LwIP_HTTP_Server_Netconn_RTOS](https://github.com/STMicroelectronics/STM32CubeH7/tree/master/Projects/NUCLEO-H723ZG/Applications/LwIP/LwIP_HTTP_Server_Netconn_RTOS)
 
+If all stuff is on you harddrive we need 4 symlinks (ln -s) to be made
+The first 3 point to 3 directores of the big STM32CubeH7 repository.
+The 4th to the ptools 
 
+<pre>
+Drivers -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Drivers/
+FreeRTOS -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Middlewares/Third_Party/FreeRTOS/
+LwIP -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Middlewares/Third_Party/LwIP/
+ptools -> /cppDev/E/ptools/
+</pre>
 
+After all
+
+<pre>
+/cppDev/E/H723ZG/h7webServer$ mkdir build
+/cppDev/E/H723ZG/h7webServer$ cd build/
+/cppDev/E/H723ZG/h7webServer/build$ cmake ..
+/cppDev/E/H723ZG/h7webServer/build$ make -j 8 
+
+iface@bigbox:/cppDev/E/H723ZG/h7webServer/build$ ls -l *.elf
+-rwxrwxr-x 1 3913740 Jun 18 16:38 h7webServer.elf
+</pre>
+
+**time to flash**
+
+....to be continued ....
 
 
