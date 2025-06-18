@@ -1,0 +1,50 @@
+==================================================================
+ Adressebereich        | Größe      | Beschreibung
+==================================================================
+ 0x0000_0000 - 0x0001_FFFF | 128 KB    | ITCM RAM (Tightly Coupled RAM, sehr schnell)
+                                -> Nur für Instruktions-Fetch, kein DMA!
+
+ 0x1000_0000 - 0x1003_FFFF | 256 KB    | DTCM RAM (Tightly Coupled RAM)
+                                -> Sehr schneller RAM für Daten (kein DMA!)
+
+ 0x2000_0000 - 0x2003_FFFF | 256 KB    | SRAM1 (AXI-SRAM)
+                                -> Für allgemeine Daten, Stack, Heap, DMA geeignet
+
+ 0x3000_0000 - 0x3001_FFFF | 128 KB    | SRAM2 (AHB SRAM)
+                                -> Günstiger, aber langsamer als AXI
+
+ 0x3002_0000 - 0x3002_FFFF | 64 KB     | SRAM3 (AHB SRAM)
+                                -> optionaler Zusatzspeicher
+
+ 0x3800_0000 - 0x3800_FFFF | 64 KB     | SRAM4 (AHB SRAM)
+
+------------------------------------------------------------------
+ 0x0800_0000 - 0x080F_FFFF | 1 MB      | Flash (main)
+                                -> Programmcode, Konstanten
+
+ 0x1FF1_0000 - 0x1FF1_7FFF | 32 KB     | OTP + System memory (bootloader, UID...)
+
+------------------------------------------------------------------
+ 0x4000_0000 - 0x5FFF_FFFF | Peripherals (AHB/APB)
+                                -> Registerzugriff auf UART, SPI, DMA, GPIO, ...
+
+ 0x6000_0000 - 0x9FFF_FFFF | External Memory Interface (FMC)
+                                -> für externe RAMs, NAND/NOR, etc.
+
+ 0xA000_0000 - 0xBFFF_FFFF | External Devices via AXI (z. B. OctoSPI)
+
+ 0xC000_0000 - 0xFFFF_FFFF | System und Debug
+                                -> CoreSight, SysTick, MPU, SCB, ITM, etc.
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+Startadresse (dezimal)	Länge (Bytes)	Beschreibung
+0	        131072	ITCM RAM – Tightly Coupled Memory für Instruktions-Fetch. Extrem schnell, aber nicht DMA-fähig.
+268435456	262144	DTCM RAM – Tightly Coupled Memory für Daten. Sehr schnell, ideal für Stack/Variablen, kein DMA-Zugriff.
+536870912	262144	SRAM1 (AXI) – Haupt-RAM für Code/Daten/Heap/Stack. DMA-fähig, schnell über AXI angebunden.
+805306368	131072	SRAM2 (AHB) – Weitere RAM-Bank, DMA-fähig, etwas langsamer als AXI-RAM.
+805437440	65536	SRAM3 (AHB) – Zusatz-RAM, DMA-fähig, für Pufferspeicher geeignet.
+905969664	65536	SRAM4 (AHB) – Weiterer SRAM-Bereich. DMA-fähig, optional.
+134217728	1048576	Flash (main) – Haupt-Flashspeicher für Programmcode und Konstanten. 1 MB.
+536924160	32768	System-Bereich (OTP/System ROM) – Enthält z. B. Bootloader, Unique ID, Werkskalibrierung.
