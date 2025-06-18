@@ -241,7 +241,7 @@ static void write_page_person_danke (const char * pBufRequest, uint16_t reqBufle
 
 static void write_LED (const char * pBufRequest, uint16_t reqBuflen, PWriterSocket & pw)
 {
-    pp("page::write_LED, with PWriterSocket");
+//    pp("page::write_LED, with PWriterSocket");
 
 //    ARRAY_HANDLES ar(buf_ar, OBJECTS_COUNT);
 //    MemoryPool pool(BLOCK_SIZE, BLOCK_COUNT, buf, &ar);
@@ -266,19 +266,23 @@ static void write_LED (const char * pBufRequest, uint16_t reqBuflen, PWriterSock
 
             Node & nRoot = builder.root;
 
+            pp(8, "Node");
+            nRoot.show(12);
+
             Node * n = nRoot.query(".led_yellow");
             if (n)
             {
-                pp("yellow blink:$", n->numberValue);
+//                pp("yellow blink:$", n->numberValue);
                 set_blinky_yellow_delay(n->numberValue);
             }
 
             n = nRoot.query(".led_red");
             if (n)
             {
-                pp("red blink:$", n->numberValue);
+//                pp("red blink:$", n->numberValue);
                 set_blinky_red_delay(n->numberValue);
             }
+            pp();
 
             //nRoot.show();
 
@@ -297,60 +301,6 @@ static void write_LED (const char * pBufRequest, uint16_t reqBuflen, PWriterSock
 
 
 
-
-
-static void rr8_LED (PWriterSocket & writerSocket, const char * pBufRequest, uint16_t reqBuflen, struct netconn * conn)
-{
-//    pp("******************");
-//    pp("*** rr8_LED c ********");
-//    pp("******************");
-
-
-    if (!pBufRequest)
-    {
-        pp("pBufRequest == nullptr");
-        return;
-    }
-
-
-
-    if (strstr(pBufRequest, "POST /"))
-    {
-        write_LED(pBufRequest, reqBuflen, writerSocket);
-    }
-    else
-    {
-//        const char * pPage = page_person();
-        const char * pPage = page_blink_control();
-        const uint32_t szPage = string_len(pPage);
-
-        writerSocket.sprintCRLF("HTTP/1.0 $ OK", 200);
-        writerSocket.sprintCRLF("Content-Type: $", "text/html");
-        writerSocket.sprintCRLF("Content-Length: $", szPage);
-        writerSocket.sprintCRLF();
-
-
-        writerSocket.write_mem(pPage, szPage);
-    }
-
-    //if ((buflen >= 5) && (strncmp(buf, "POST /", 6) == 0))
-
-
-}
-
-static void page_led (PWriterSocket & writerSocket, struct netconn * conn)
-{
-    const char * pPage = page_blink_control();
-
-    const uint32_t szPage = string_len(pPage);
-
-    writerSocket.sprintCRLF("HTTP/1.0 $ OK", 200);
-    writerSocket.sprintCRLF("Content-Type: $", "text/html");
-    writerSocket.sprintCRLF("Content-Length: $", szPage);
-    writerSocket.sprintCRLF();
-
-    writerSocket.write_mem(pPage, szPage);
-}
 
 static void write_page (PWriterSocket & writerSocket, const char * pPage)
 {
@@ -372,11 +322,6 @@ static void write_page (PWriterSocket & writerSocket, const char * pPage)
 
 static void cpp_request_response (const char * pBufRequest, uint16_t reqBuflen, struct netconn * conn)
 {
-    pp("cpp_request_response ****");
-    pp("+++");
-    pp_first_line(pBufRequest);
-    pp("+++");
-
 
     PWriterSocket writerSocket(conn, socket_tx_wrapper);
 
@@ -391,28 +336,19 @@ static void cpp_request_response (const char * pBufRequest, uint16_t reqBuflen, 
 
     PStringView viewRequest(pBufRequest, PStringView::BORDER::CRLF);
 
-    pp("page::cpp_request_response <<<$>>>", viewRequest);
-
-//    (struct netconn *) conn
-
-//  POST /api/led HTTP/1.1
-//  GET / HTTP/1.1
-//  GET /STM32H7xx.html HTTP/1.1
-//  GET /STM32H7xx_files/stm32.jpg HTTP/1.1
-
     PRequest request = PRequest::create_request(viewRequest);
     request.show(4);
 
-//    if (viewRequest.starts_with("GET"))
     if (request.is_GET())
     {
+        pp_first_line(pBufRequest);
 
 //        if (viewRequest.starts_with("GET /") || viewRequest.starts_with("GET /blinky"))
         if (request.requestTarget == "/")
         {
             write_page(writerSocket, page_main());
         }
-        else if (request.requestTarget == "/" || request.requestTarget == "/blinky")
+        else if (request.requestTarget == "/blinky")
         {
 //            page_led(writerSocket, conn);
             write_page(writerSocket, page_blink_control());

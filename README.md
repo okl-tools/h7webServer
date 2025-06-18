@@ -14,7 +14,7 @@ This picture shows C++ app page on mobile controlling 2 LEDs on NUCLEO board
 
 
 Receipe to build the h7webserver
-- ensure to have a working arm toolchain, not too old. - 14.2 but 12 or 13 could work also <br/>
+- ensure to have a working arm toolchain, not too old. - 14.2 but 12 or 13 should be good also <br/>
 inside bash type<br/>
 **arm-none-eabi-g++ --version** <br/>
 *which should show you* <br/>
@@ -35,7 +35,9 @@ This code - h7Webserver - fork of [github.com/STM .../LwIP_HTTP_Server_Netconn_R
 
 If all stuff is on you harddrive we need 4 symlinks (ln -s) to be made
 The first 3 point to 3 directores of the big STM32CubeH7 repository.
-The 4th to the ptools 
+The 4th to the ptools
+
+The links you see here point to the stuff in my environment. So create them and adapt to yours.
 
 <pre>
 Drivers -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Drivers/
@@ -58,6 +60,63 @@ iface@bigbox:/cppDev/E/H723ZG/h7webServer/build$ ls -l *.elf
 
 **time to flash**
 
-....to be continued ....
+Now it's time to play.
+We connect the board to our router. The boards software has dhcp capabilities.
+In which state is the server ? We want to see the IP adress the board is using.
+For this we start a terminal program which communicates via serial protocol.
+Normally it's serial over USB - same way how we normally flash the board.
+Terminal program should detect LF as line end - not CRLF. 
+If CRLF our lines look crazy and not readable. Example output 
+
+[Number] [Time] [Thread-ID]
+
+<pre>
+iface@bigbox:~$ picocom --imap lfcrlf /dev/ttyACM0 -b 115200
+
+[000001] [00:00:00,000][000000000] ********************************
+[000002] [00:00:00,000][000000000] *** BOOT SYSTEM ****************
+[000003] [00:00:00,000][000000000] *** Simple Web Server 0.29 *****
+[000004] [00:00:00,000][000000000] ********************************
+[000005] [00:00:00,000][536906808] Watchdog barking at ~4 seconds
+[000006] [00:00:00,002][536906808] ini_my_threads
+[000007] [00:00:03,505][536916000] IP:192.168.1.6
+[000008] [00:00:15,413][536922256]     PRequest all: 'GET / HTTP/1.1'
+[000009] [00:00:15,419][536922256]           method: 'GET'
+[000010] [00:00:15,424][536922256]           target: '/'
+[000011] [00:00:15,429][536922256]          version: '1.1'
+[000012] [00:00:15,434][536922256] GET / HTTP/1.1
+[000013] [00:01:01,005][536923592] heart 1 beat times
+[000014] [00:01:09,095][536922256]     PRequest all: 'GET /blinky HTTP/1.1'
+[000015] [00:01:09,101][536922256]           method: 'GET'
+[000016] [00:01:09,106][536922256]           target: '/blinky'
+[000017] [00:01:09,112][536922256]          version: '1.1'
+[000018] [00:01:09,117][536922256] GET /blinky HTTP/1.1
+[000019] [00:01:09,132][536922256] POST /api/led HTTP/1.1
+[000020] [00:01:09,137][536922256]     PRequest all: 'POST /api/led HTTP/1.1'
+[000021] [00:01:09,144][536922256]           method: 'POST'
+[000022] [00:01:09,149][536922256]           target: '/api/led'
+[000023] [00:01:09,155][536922256]          version: '1.1'
+[000024] [00:01:09,161][536922256]         Node
+[000025] [00:01:09,165][536922256]             led_yellow
+[000026] [00:01:09,170][536922256]                 numberValue:500.00
+[000027] [00:01:09,177][536922256]             led_red
+[000028] [00:01:09,181][536922256]                 numberValue:500.00
+[000029] [00:01:09,188][536922256] 
+[000030] [00:01:14,080][536922256] POST /api/led HTTP/1.1
+[000031] [00:01:14,085][536922256]     PRequest all: 'POST /api/led HTTP/1.1'
+[000032] [00:01:14,092][536922256]           method: 'POST'
+[000033] [00:01:14,097][536922256]           target: '/api/led'
+[000034] [00:01:14,102][536922256]          version: '1.1'
+[000035] [00:01:14,108][536922256]         Node
+[000036] [00:01:14,113][536922256]             led_yellow
+[000037] [00:01:14,118][536922256]                 numberValue:223.00
+[000038] [00:01:14,124][536922256]             led_red
+[000039] [00:01:14,129][536922256]                 numberValue:500.00
+[000040] [00:01:14,135][536922256] 
+</pre>
+
+
+
+
 
 

@@ -207,11 +207,9 @@ err_t http_write(struct netconn *conn, const char *data, size_t len)
     return ERR_OK;
 }
 
-//__attribute__((weak)) void request_response (const char * pBufRequest, uint16_t reqBuflen, void * conn, const char *data, size_t len)
 __attribute__((weak)) void request_response (const char * pBufRequest, uint16_t reqBuflen, void * conn)
 {
     ppc("::request_response - overwrite me !");
-    //http_write(conn, data, len);
 }
 
 
@@ -228,7 +226,7 @@ static void http_server_serve (struct netconn * conn)
     u16_t buflen;
     struct fs_file file;
 
-    ppc("");
+//    ppc("");
 
     /* Read the data from the port, blocking if nothing yet there.
      We assume the request (the part we care about) is in one netbuf */
@@ -248,34 +246,35 @@ static void http_server_serve (struct netconn * conn)
             }
             else if ((buflen >= 5) && (strncmp(buf, "GET /", 5) == 0))
             {
-                pp_first_line(buf);
-
-
-                // Check if request to get ST.gif
                 if (strncmp((char const *) buf, "GET /STM32H7xx_files/ST.gif", 27) == 0)
                 {
+                    pp_first_line(buf);
                     fs_open(&file, "/STM32H7xx_files/ST.gif");
                     netconn_write(conn, (const unsigned char *) (file.data), (size_t) file.len, NETCONN_NOCOPY);
                     fs_close(&file);
                 }
                 else if (strncmp((char const *) buf, "GET /STM32H7xx_files/stm32.jpg", 30) == 0)
                 {
+                    pp_first_line(buf);
                     fs_open(&file, "/STM32H7xx_files/stm32.jpg");
                     netconn_write(conn, (const unsigned char *) (file.data), (size_t) file.len, NETCONN_NOCOPY);
                     fs_close(&file);
                 }
                 else if (strncmp((char const *) buf, "GET /STM32H7xx_files/logo.jpg", 29) == 0)
                 {
+                    pp_first_line(buf);
                     fs_open(&file, "/STM32H7xx_files/logo.jpg");
                     netconn_write(conn, (const unsigned char *) (file.data), (size_t) file.len, NETCONN_NOCOPY);
                     fs_close(&file);
                 }
                 else if (strncmp(buf, "GET /STM32H7xxTASKS.html", 24) == 0)
                 {
+                    pp_first_line(buf);
                     DynWebPage(conn);
                 }
                 else if ((strncmp(buf, "GET /STM32H7xx.html", 19) == 0))
                 {
+                    pp_first_line(buf);
                     fs_open(&file, "/STM32H7xx.html");
                     netconn_write(conn, (const unsigned char *) (file.data), (size_t) file.len, NETCONN_NOCOPY);
                     fs_close(&file);
@@ -284,17 +283,6 @@ static void http_server_serve (struct netconn * conn)
                 else
                 {
                     request_response(buf, buflen, conn);
-
-//                    if (strstr(buf, "GET /blinky")  || (strncmp(buf, "GET / ", 6) == 0))
-//                    {
-//                        request_response(buf, buflen, conn);
-//                    }
-
-
-                    // Load Error page
-//                    fs_open(&file, "/404.html");
-//                    netconn_write(conn, (const unsigned char *) (file.data), (size_t) file.len, NETCONN_NOCOPY);
-//                    fs_close(&file);
                 }
             }
         }
