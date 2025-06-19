@@ -13,7 +13,15 @@ This picture shows C++ app page on mobile controlling 2 LEDs on NUCLEO board
 ![mobile-controls.jpg](mobile-controls.jpg)
 
 
-Receipe to build and run the  h7webserver
+## Receipe to build and run the  h7webserver
+
+### The fast way - get all-in-one-zip from my tools page [tools.okl.de](https://tools.okl.de) 
+- download, unpack, start buildElf.sh, flash - done<br/>
+  (if cmake and arm toolchain are reachable from console you can do this all in less than one minute)
+- bonus: picture above is from a 20 seconds clip on [tools.okl.de](https://tools.okl.de) 
+
+ 
+### Recommended, go this way to learn more about Nucleo board, software, ...
 - connect your NUCLEO-H723ZG with USB for flashing and terminal access.
 - connect your NUCLEO-H723ZG with Ethernet cable to you switch/router
 - ensure to have a working arm toolchain, not too old. - 14.2 but 12 or 13 should be good also <br/>
