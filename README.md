@@ -13,31 +13,37 @@ This picture shows C++ app page on mobile controlling 2 LEDs on NUCLEO board
 ![mobile-controls.jpg](mobile-controls.jpg)
 
 
-Receipe to build the h7webserver
+Receipe to build and run the  h7webserver
+- connect your NUCLEO-H723ZG with USB for flashing and terminal access.
+- connect your NUCLEO-H723ZG with Ethernet cable to you switch/router
 - ensure to have a working arm toolchain, not too old. - 14.2 but 12 or 13 should be good also <br/>
 inside bash type<br/>
 **arm-none-eabi-g++ --version** <br/>
-*which should show you* <br/>
+*which should show you something like* <br/>
   arm-none-eabi-g++ (xPack GNU Arm Embedded GCC x86_64) 14.2.1 20241119
   Copyright (C) 2024 Free Software Foundation, Inc.
 
-- cmake 3.22 or more new
+- cmake 3.22 or higher
+- terminal program, "picocom" recommended
 
-- git clone https://github.com/STMicroelectronics/STM32CubeH7/tree/master </br>
-I recommend to do this because than you are sure to have all driver code
-and original examples. Unfortunately it is really big - 2.4 GB
+- 3 Repositories to clone
+  - git clone https://github.com/STMicroelectronics/STM32CubeH7/tree/master </br>
+    I recommend to do this because than you are sure to have all driver code
+    and original examples. Unfortunately it is really big - 2.4 GB
 
-- git clone https://github.com/okl-tools/ptools </br> 200 KB only </br>
-ptools is a C++ 20 lib which makes a bridge between C and C++ 20.
+  - git clone https://github.com/okl-tools/ptools </br> 200 KB only </br>
+    ptools is a C++ 20 lib which makes a bridge between C and C++ 20.
 
-- git clone https://github.com/okl-tools/h7webServer </br>
-This code - h7Webserver - fork of [github.com/STM .../LwIP_HTTP_Server_Netconn_RTOS](https://github.com/STMicroelectronics/STM32CubeH7/tree/master/Projects/NUCLEO-H723ZG/Applications/LwIP/LwIP_HTTP_Server_Netconn_RTOS)
+  - git clone https://github.com/okl-tools/h7webServer </br>
+    This code - h7webServer - fork of [github.com/STM .../LwIP_HTTP_Server_Netconn_RTOS](https://github.com/STMicroelectronics/STM32CubeH7/tree/master/Projects/NUCLEO-H723ZG/Applications/LwIP/LwIP_HTTP_Server_Netconn_RTOS)
 
-If all stuff is on you harddrive we need 4 symlinks (ln -s) to be made
-The first 3 point to 3 directores of the big STM32CubeH7 repository.
-The 4th to the ptools
+If all stuff is on you hard disk open a shell and go inside h7webServer folder<br/>
+We need 4 symlinks (ln -s) to be made in this directory.
+The first 3 point to 3 directories of the big STM32CubeH7 repository.
+The 4th to ptools 
 
-The links you see here point to the stuff in my environment. So create them and adapt to yours.
+The links you see here within [h7webServer] folder point to the stuff in <b>my environment</b>. 
+So create them and let them point to your downloaded repos.
 
 <pre>
 Drivers -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Drivers/
@@ -46,7 +52,7 @@ LwIP -> /cppDev/E/stm32/H7/v12.1/STM32CubeH7/Middlewares/Third_Party/LwIP/
 ptools -> /cppDev/E/ptools/
 </pre>
 
-After all
+Allright, links are set and now ...
 
 <pre>
 /cppDev/E/H723ZG/h7webServer$ mkdir build
@@ -54,19 +60,29 @@ After all
 /cppDev/E/H723ZG/h7webServer/build$ cmake ..
 /cppDev/E/H723ZG/h7webServer/build$ make -j 8 
 
-iface@bigbox:/cppDev/E/H723ZG/h7webServer/build$ ls -l *.elf
--rwxrwxr-x 1 3913740 Jun 18 16:38 h7webServer.elf
+/cppDev/E/H723ZG/h7webServer/build$ ls -l *.elf
+-rwxrwxr-x 1 267332 Jun 18 16:38 h7webServer.elf
 </pre>
 
 **time to flash**
 
 Now it's time to play.
-We connect the board to our router. The boards software has dhcp capabilities.
-In which state is the server ? We want to see the IP adress the board is using.
+The boards software has dhcp capabilities.
+In which state is our server ? We also want to know about <b>IP adress</b> the board is using.
 For this we start a terminal program which communicates via serial protocol.
-Normally it's serial over USB - same way how we normally flash the board.
+With picocom I do<br/>
+<b>picocom --imap lfcrlf /dev/ttyACM0 -b 115200</b><br/> 
+Normally it's serial over USB - same cable to flash the board.
 Terminal program should detect LF as line end - not CRLF. 
-If CRLF our lines look crazy and not readable. Example output 
+If CRLF our lines look crazy and not good readable.<br/> 
+In our browser we type http://192.168.1.6 <br/>  
+It is exactly the IP found in the output of terminal. <br/> 
+The main page with 3 buttons will appear in the browser.<br/>  
+Choose **LED control** and have fun!
+
+Tip: If your terminal is connected and you do not see any output press the reset button on your board.
+
+Example output - here you find the IP in log message [000007] 
 
 [Number] [Time] [Thread-ID]
 

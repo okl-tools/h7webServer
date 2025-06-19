@@ -12,6 +12,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+#option(StripElf "Strip debug symbols from the final ELF file" OFF)
+option(StripElf "Strip debug symbols from the final ELF file" ON)
+
 
 # arm toolchain
 include("cmake/gcc-arm-none-eabi.cmake")
@@ -22,7 +25,7 @@ add_compile_definitions(USE_FULL_ASSERT=1)
 add_compile_definitions(H7_FREE_RTOS)
 
 # information for IDEs like clion
-set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 # project
 set(CMAKE_PROJECT_NAME h7webServer)
@@ -41,7 +44,16 @@ list(REMOVE_ITEM APP_SOURCES ${CMAKE_SOURCE_DIR}/Core/Src/fsdata_custom.c)
 
 # linker script
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H723ZGTX_FLASH.ld)
-set(CMAKE_EXE_LINKER_FLAGS "-T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map")
+#set(CMAKE_EXE_LINKER_FLAGS "-T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map")
+
+if (StripElf)
+    set(CMAKE_EXE_LINKER_FLAGS "-T${LINKER_SCRIPT}")
+    message(STATUS "✅ StripElf is ON – no .map file, ELF will be stripped.")
+else()
+    set(CMAKE_EXE_LINKER_FLAGS "-T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map")
+    message(STATUS "ℹ️  StripElf is OFF – .map file will be generated.")
+endif()
+
 
 # executable
 add_executable(${CMAKE_PROJECT_NAME}
@@ -50,6 +62,14 @@ add_executable(${CMAKE_PROJECT_NAME}
         ${PTOOLS_SOURCES_CPP}
         startup_stm32h723zgtx.s
 )
+
+if (StripElf)
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND arm-none-eabi-strip ${CMAKE_PROJECT_NAME}.elf
+            COMMENT "Stripping debug symbols from ${CMAKE_PROJECT_NAME}.elf"
+    )
+endif()
+
 
 # include
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE Core/Inc ptools/inc)
