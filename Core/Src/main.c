@@ -29,7 +29,6 @@
 #include "httpserver_netconn.h"
 #include "app_ethernet.h"
 #include "pp.h"
-#include "PWriter.h"
 #include "stm32h7xx_hal_iwdg.h"
 
 struct netif gnetif; /* network interface structure */
@@ -45,6 +44,8 @@ void StartThread (void * argument);
 static void Netif_Config (void);
 static void MPU_Config (void);
 static void CPU_CACHE_Enable (void);
+
+//void prepare_writer (UART_HandleTypeDef * uart);
 
 
 COM_InitTypeDef BspCOMInit;
@@ -138,13 +139,14 @@ int main (void)
     }
 
 
-    prepare_writer(&hcom_uart[COM1]);
+//    prepare_writer(&hcom_uart[COM1]);
+    prepare_the_writer(&hcom_uart[COM1]);
 
 
     printf("\n");
     ppc("********************************");
     ppc("*** BOOT SYSTEM ****************");
-    ppc("*** Simple Web Server 0.29 *****");
+    ppc("*** Simple Web Server 0.30 *****");
     ppc("********************************");
 
 

@@ -6,6 +6,8 @@ ptools
 /build/
 /.idea/
 
+/.idea/vcs.xml
+
 *.elf
 *.o
 *.obj

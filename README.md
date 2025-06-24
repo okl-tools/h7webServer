@@ -15,10 +15,10 @@ This picture shows C++ app page on mobile controlling 2 LEDs on NUCLEO board
 
 ## Receipe to build and run the  h7webserver
 
-### The fast way - get all-in-one-zip from my tools page <a href = "https://tools.okl.de" target="tools_okl">tools.okl.de</a> 
+### The fast way - get all-in-one-zip from my tools page [tools.okl.de](https://tools.okl.de) 
 - download, unpack, start buildElf.sh, flash - done<br/>
   (if cmake and arm toolchain are reachable from console you can do this all in less than one minute)
-- bonus: picture above is from a 20 seconds clip on <a href = "https://tools.okl.de" target="tools_okl">tools.okl.de</a> 
+- bonus: picture above is from a 20 seconds clip on [tools.okl.de](https://tools.okl.de) 
 
  
 ### Recommended, go this way to learn more about Nucleo board, software, ...

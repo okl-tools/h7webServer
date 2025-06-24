@@ -296,7 +296,6 @@ static void http_server_serve (struct netconn * conn)
 }
 
 
-
 /**
   * @brief  http server thread 
   * @param arg: pointer on argument(not used here) 
